@@ -61,19 +61,13 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-  const body = request.body
+  const {name, number} = request.body
 
-  console.log(body)
-
-  if (!body.name | !body.number) {
-    return response.status(400).json({
-        error: 'include both name and number'
-    })
-  }
+  console.log(name, number)
 
   const person = new Person({
-    name: body.name,
-    number: body.number
+    name: name,
+    number: number
   })
 
   person.save().then(savedPerson => {
@@ -90,7 +84,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+  Person.findByIdAndUpdate(
+    request.params.id,
+    person,
+    {new: true, runValidators: true, context: 'query'})
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
