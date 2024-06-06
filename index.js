@@ -70,15 +70,13 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  persons = persons.filter(person => person.id !== id)
-
-  console.log(person)
-
-  response.json(person)
-
-  response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.json(result)
+      console.log(result)
+      response.status(204).end()
+    }
+  )
 })
 
 app.post('/api/persons', (request, response) => {
